@@ -1,0 +1,40 @@
+/*não tá completo, por enquanto só o header e o footer que tão funcionando (de acordo com o protótipo que me foi mandado), se tiver algum problema no código me fala*/
+/*recomendo colocar o h1 da farmacia dentro do nav pra deixar mais espaço*/
+/*e por favor, TIRA O BORDER 1 DA TABLE DO INDEX!!!!!!!!!*/
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+h1{
+    color:#dbdbdb;
+}
+
+nav{
+    background-color: #3dfc40;
+}
+
+nav ul {
+    display:flex;/*deixa de alinhar em uma mesma linha*/
+    list-style: none;
+    padding: 0;
+}
+
+nav a {
+    border:1px solid #dbdbdb;
+    color: #dbdbdb;
+    text-decoration: none;
+    display: block;
+    padding:5px;
+}
+
+
+
+footer {
+    background-color: #3dfc40;
+    color: #dbdbdb;
+    text-align: center;
+
+}
