@@ -1,17 +1,20 @@
 <?php
 require_once 'config/conexao.php';
 
-$id = $_GET['id'] ?? null;
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if ($id) {
-    // Exclui com segurança usando Prepare
     $sql = "DELETE FROM produtos WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':id', $id);
-    $stmt->execute();
+    
+    if ($stmt->execute()) {
+        $_SESSION['mensagem'] = "🗑️ Produto removido do estoque.";
+    } else {
+        $_SESSION['mensagem'] = "❌ Erro ao remover o produto.";
+    }
 }
 
-// Redireciona de volta para a página principal
 header("Location: index.php");
 exit;
 ?>
