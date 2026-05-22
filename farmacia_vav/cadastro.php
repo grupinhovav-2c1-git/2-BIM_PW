@@ -1,13 +1,16 @@
 <?php
 require_once 'config/conexao.php';
 
+$mensagem = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = trim($_POST['nome'] ?? '');
-    $fabricante = trim($_POST['fabricante'] ?? '');
+    $nome = $_POST['nome'] ?? '';
+    $fabricante = $_POST['fabricante'] ?? '';
     $preco = $_POST['preco'] ?? 0;
     $estoque = $_POST['estoque'] ?? 0;
 
     if (!empty($nome) && !empty($fabricante)) {
+        // Proteção contra SQL Injection usando Prepared Statements
         $sql = "INSERT INTO produtos (nome, fabricante, preco, estoque) VALUES (:nome, :fabricante, :preco, :estoque)";
         $stmt = $pdo->prepare($sql);
         
@@ -17,51 +20,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(':estoque', $estoque);
 
         if ($stmt->execute()) {
-            $_SESSION['mensagem'] = "✅ Produto cadastrado com sucesso!";
-            header("Location: index.php"); // Redireciona para evitar F5 (reenvio de form)
-            exit;
+            $mensagem = "Produto cadastrado com sucesso!";
         } else {
-            $erro = "Erro ao salvar no banco de dados.";
+            $mensagem = "Erro ao cadastrar o produto.";
         }
     } else {
-        $erro = "Preencha todos os campos obrigatórios.";
+        $mensagem = "Por favor, preencha todos os campos obrigatórios.";
     }
 }
 
 require_once 'includes/header.php';
 ?>
 
-<h2>Cadastrar Medicamento / Produto</h2>
+<h2>Cadastrar Novo Produto</h2>
 
-<?php if (isset($erro)): ?>
-    <p class="alerta-erro"><strong><?php echo $erro; ?></strong></p>
+<?php if (!empty($mensagem)): ?>
+    <p><strong><?php echo $mensagem; ?></strong></p>
 <?php endif; ?>
 
-<form action="cadastro.php" method="POST" class="formulario">
-    <div class="campo">
+<form action="cadastro.php" method="POST">
+    <div>
         <label for="nome">Nome do Produto:</label>
-        <input type="text" id="nome" name="nome" placeholder="Ex: Paracetamol 500mg" required>
+        <input type="text" id="nome" name="nome" required>
     </div>
     
-    <div class="campo">
-        <label for="fabricante">Fabricante / Laboratório:</label>
-        <input type="text" id="fabricante" name="fabricante" placeholder="Ex: Medley" required>
+    <div>
+        <label for="fabricante">Fabricante:</label>
+        <input type="text" id="fabricante" name="fabricante" required>
     </div>
     
-    <div class="campo">
-        <label for="preco">Preço de Venda (R$):</label>
-        <input type="number" id="preco" name="preco" step="0.01" min="0.01" placeholder="0,00" required>
+    <div>
+        <label for="preco">Preço (R$):</label>
+        <input type="number" id="preco" name="preco" step="0.01" min="0" required>
     </div>
     
-    <div class="campo">
-        <label for="estoque">Qtd. em Estoque:</label>
-        <input type="number" id="estoque" name="estoque" min="0" placeholder="Ex: 50" required>
+    <div>
+        <label for="estoque">Quantidade em Estoque:</label>
+        <input type="number" id="estoque" name="estoque" min="0" required>
     </div>
     
-    <div class="botoes-form">
-        <button type="submit" class="btn-salvar">Salvar Produto</button>
-        <a href="index.php" class="btn-cancelar">Cancelar</a>
-    </div>
+    <button type="submit">Salvar Produto</button>
 </form>
 
 <?php require_once 'includes/footer.php'; ?>
